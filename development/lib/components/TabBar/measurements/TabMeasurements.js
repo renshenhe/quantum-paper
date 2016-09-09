@@ -18,6 +18,12 @@ export default class TabMeasurements extends PureComponent {
           labelPosition='top'
           left={-18}
         />
+        <Ruler
+          height={20}
+          bottom={0}
+          labelPosition='bottom'
+          left={124}
+        />
       </div>
     );
   }

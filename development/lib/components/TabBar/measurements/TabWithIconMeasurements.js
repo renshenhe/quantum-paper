@@ -6,8 +6,6 @@ import Ruler from '../../Ruler/Ruler';
 export default class TabWithIconMeasurements extends PureComponent {
   render() {
     const { rect } = this.props;
-    const halfWidth = (rect.width - 16) / 2;
-    const iconPosition = (rect.width - 48) / 2;
     return (
       <div>
         <Ruler

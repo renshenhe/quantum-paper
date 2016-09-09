@@ -1,25 +1,25 @@
 /* @flow */
 
 import React, { PureComponent } from 'react';
-
-function getStyles(props, state) {
+import ReactDOM from 'react-dom';
+import LeftSpinner from './LeftSpinner';
+import RightSpinner from './RightSpinner';
+function getStyles(props) {
   const {
     color,
     indeterminate,
   } = props;
 
-  const {
-    rotation,
-    transition,
-  } = state;
   const styles = {
     container: {
       position: 'absolute',
       width: '100%',
       height: '100%',
       borderColor: color,
-      transition: 'transform 666.5ms cubic-bezier(0.4, 0, 0.2, 1)',
-      transform: rotation,
+      opacity: '0',
+      direction: 'ltr',
+      // transition: 'transform 666.5ms cubic-bezier(0.4, 0, 0.2, 1)',
+      // transform: 'rotate(0deg)',
     },
     clipper: {
       display: 'inline-block',
@@ -30,47 +30,59 @@ function getStyles(props, state) {
       borderColor: 'inherit',
     },
     leftSpinner: {
-      borderRightColor: 'transparent',
       width: '200%',
       boxSizing: 'border-box',
       height: '100%',
       borderWidth: '3px',
       borderStyle: 'solid',
-      borderColor: 'inherit',
+      // borderColor: 'inherit',
+      borderTopColor: 'inherit',
+      borderLeftColor: 'inherit',
       borderBottomColor: 'transparent',
+      borderRightColor: 'transparent',
       borderRadius: '50%',
+      // borderLeftColor: 'transparent !important',
+
       position: 'absolute',
-      top: '0px',
-      right: '0px',
-      bottom: '0px',
-      left: '0px',
-      transform: ''
+      top: '0',
+      right: '0',
+      bottom: '0',
+      left: '0',
+      transform: 'rotate(129deg)',
     },
     rightSpinner: {
       left: '-100%',
-      borderRightColor: 'transparent',
       width: '200%',
+      transform: 'rotate(-129deg)',
       boxSizing: 'border-box',
       height: '100%',
       borderWidth: '3px',
       borderStyle: 'solid',
-      borderColor: 'inherit',
+      // borderColor: 'inherit',
+      // borderLeftColor: 'inherit'
+      borderRightColor: 'inherit',
+      borderTopColor: 'inherit',
       borderBottomColor: 'transparent',
+      borderLeftColor: 'transparent',
+      // borderRightColor: 'transparent !important',
+      
       borderRadius: '50%',
       position: 'absolute',
-      top: '0px',
-      right: '0px',
-      bottom: '0px',
+      top: '0',
+      right: '0',
+      bottom: '0',
+
     },
     gapPatch: {
       position: 'absolute',
       boxSizing: 'border-box',
-      top: '0px',
+      top: '0',
       left: '45%',
       width: '10%',
       height: '100%',
       overflow: 'hidden',
       borderColor: 'inherit',
+      // borderBottomColor: 'transparent',
     },
     circle: {
       width: '1000%',
@@ -79,86 +91,49 @@ function getStyles(props, state) {
       height: '100%',
       borderWidth: '3px',
       borderStyle: 'solid',
-      borderColor: 'inherit',
+      // borderColor: 'inherit',
+      borderTopColor: 'inherit',
+      borderLeftColor: 'inherit',
+      borderRightColor: 'inherit',
       borderBottomColor: 'transparent',
+      borderRadius: '50%',
+      animation: 'none',
       position: 'absolute',
-      top: '0px',
-      right: '0px',
-      bottom: '0px',
-      left: '0px',
+      top: '0',
+      right: '0',
+      bottom: '0',
     },
   };
-  console.log(styles.container.transform)
   return styles;
 };
 
 export default class ProgressLayer extends PureComponent {
-  state = {
-    round: 1,
-    // rotation: 'rotate(130deg)',
-    // transition: 'transform 666.5ms cubic-bezier(0.4, 0, 0.2, 1)',
-    transition: '',
-    rotation: '',
-  };
   componentDidMount() {
-    this.handleRotation()
-  }
-  // handleRotation = () => {
-  //   const { round } = this.state;
-  //   let next = round + 1;
-  //   let nextTransform = 666.5 * next;
-  //   if (round <= 8) { 
-  //     let rotate = `rotate(${135 * (next)}deg)`
-  //     this.setState({ round: next, 
-  //       transition: `transform ${nextTransform}ms cubic-bezier(0.4, 0, 0.2, 1)`,
-  //       rotation: rotate,
-  //     }, () => { console.log(this.state)})
-  //     console.log('round <= 8 is running')
-  //   } else {
-  //     this.setState({ round: 1, rotation: 'rotate(130deg)',
-  //       transition: 'transform 666.5ms cubic-bezier(0.4, 0, 0.2, 1)',
-  //     })
-  //     console.log('else is running')
-  //   }
-  // };
-  handleRotation = () => {
-      const { round } = this.state;
-    setTimeout(() => {
-      if (round <= 8) {
+    this.layer.animate(unfillRotateKeyframes, unfillRotateConfig)
+    this.layer.animate(this.props.fadeInOut, unfillRotateConfig);
+    // this.refs.layer.animate(this.props.fadeInOut, unfillRotateConfig);
+    // console.log(Array.isArray(this.props.layer))
+    // ele.animate(unfillRotateKeyframes, unfillRotateConfig);
+    this.refs.leftSpinner.animate(leftSpin, spinConfig);
+    this.refs.rightSpinner.animate(rightSpin, spinConfig);
 
-        this.setState({
-          rotation: `rotate(${135 * round}deg)`,
-          round: round + 1
-        })
-      } else {
-        this.setState({
-          // rotation: 'rotate(135deg)',
-          round: 1,
-        }, () => {
-          this.handleRotation()
-        })
-      }
-    }, round * 666.5)
-  };
-  reRotate = () => {
-    this.handleRotation()
-  };
+  }
   render() {
     const style = getStyles(this.props, this.state);
 
     return (
       <div
         style={style.container}
-        onTransitionEnd={this.reRotate}
+        ref={r => this.layer = r}
       >
         <div style={style.clipper}>
-          <div style={style.leftSpinner} />
+          <div style={style.leftSpinner} ref='leftSpinner' />
         </div>
         <div style={style.gapPatch}>
           <div style={style.circle} />
         </div>
         <div style={style.clipper}>
-          <div style={style.rightSpinner} />
+          <div style={style.rightSpinner} ref='rightSpinner' />
         </div>
       </div>
     );
@@ -173,57 +148,39 @@ export default class ProgressLayer extends PureComponent {
 //       return 0;
 //   }
 // };
-const leftSpin = {
-  '0%': 'transform: rotate(130deg)',
-  '50%': 'transform: rotate(-5deg)',
-  '100%': 'transform: rotate(130deg)',
-};
 
-const rightSpin = {
-  '0%': 'transform: rotate(-130deg)',
-  '50%': 'transform: rotate(5deg)',
-  '100%': 'transform: rotate(-130deg)',
-};
-
-const fadeInOut = [
-  {
-    '0%': '.99',
-    '25%': '.99',
-    '26%': '0',
-    '89%': '0',
-    '90%': '.99',
-    '100%': '.99'
-  },
-  {
-    '0%': '0',
-    '15%': '0',
-    '25%': '.99',
-    '50%': '.99',
-    '51%': '0',
-  },
-  {
-    '0%': '0',
-    '40%': '0',
-    '50%': '.99',
-    '75%': '.99',
-    '76%': '0',
-  },
-  {
-    '0%': '0',
-    '65%': '0',
-    '75%': '.99',
-    '90%': '.99',
-    '100%': '.99',
-  }
+const unfillRotateKeyframes = [
+  { transform: 'none', },
+  { transform: 'rotate(135deg)', offset: .125 },
+  { transform: 'rotate(270deg)', offset: .25 },
+  { transform: 'rotate(405deg)', offset: .375 },
+  { transform: 'rotate(540deg)', offset: .50 },
+  { transform: 'rotate(675deg)', offset: .625 },
+  { transform: 'rotate(810deg)', offset: .75 },
+  { transform: 'rotate(945deg)', offset: .875 },
+  { transform: 'rotate(1080deg)', offset: 1 },
 ];
 
-const unfillRotate = {
-  '12.5%': 'transform: rotate(135deg)',
-  '25%': 'transform: rotate(270deg)',
-  '37.5%': 'transform: rotate(405deg)',
-  '50%': 'transform: rotate(540deg)',
-  '62.5%': 'transform: rotate(675deg)',
-  '75%': 'transform: rotate(810deg)',
-  '87.5%': 'transform: rotate(945deg)',
-  '100%': 'transform: rotate(1080deg)',
-}
+const leftSpin = [
+  { transform: 'rotate(130deg)', offset: 0 },
+  { transform: 'rotate(-5deg)', offset: .5 },
+  { transform: 'rotate(130deg)', offset: 1 },
+];
+const rightSpin = [
+  { transform: 'rotate(-130deg)', offset: 0 },
+  { transform: 'rotate(5deg)', offset: .5 },
+  { transform: 'rotate(-130deg)', offset: 1 },
+];
+const spinConfig = {
+  duration: 1333,
+  easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  iterations: Infinity,
+  fill: 'both',
+};
+const unfillRotateConfig = {
+  duration: 5332,
+  easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  iterations: Infinity,
+  fill: 'both',
+};
+

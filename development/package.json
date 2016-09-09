@@ -4,7 +4,8 @@
   "description": "Development sandbox for quantum-paper",
   "main": "index.js",
   "scripts": {
-    "start": "start-storybook -p 9002"
+    "start": "start-storybook -p 9002",
+    "icons": "babel-node scripts/iconScripts/createIcons.js"
   },
   "author": "Ren",
   "license": "MIT",
@@ -25,6 +26,7 @@
     "babel-preset-react": "^6.11.1",
     "babel-runtime": "^6.11.6",
     "carte-blanche": "^0.3.1",
+    "mkdirp": "^0.5.1",
     "rimraf": "^2.5.4",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"

@@ -10,6 +10,9 @@ import Tab from '../Tab';
 import CloudDownload from '../../Icon/testSvg/CloudDownload';
 import { TabsWithIconsAndTextSpec } from './TabSpecs';
 import ContainerRuler from '../../Ruler/ContainerRuler';
+import ScreenLockRotationIcon from '../../SvgIcons/Device/ScreenLockRotationIcon';
+import AccessibleIcon from '../../SvgIcons/Action/AccessibleIcon';
+import PhoneIcon from '../../SvgIcons/Communication/PhoneIcon';
 
 class MeasuredTabBar extends PureComponent {
   state = {
@@ -25,15 +28,17 @@ class MeasuredTabBar extends PureComponent {
       >
         <Tab value={0}
           onClick={() => this.handleClick(0)}
-          icon={<CloudDownload />}
+          icon={<PhoneIcon />}
           label='Item one' />
         <Tab value={1} 
           onClick={() => this.handleClick(1)}
-
-        label='Item two' />
+          icon={<AccessibleIcon />}
+        label='Item twoefaefawefwef' />
 
         <Tab label='Item three'
         value={2}
+          icon={<ScreenLockRotationIcon />}
+
           onClick={() => this.handleClick(2)}
 
          />
@@ -63,8 +68,23 @@ class MeasuredTabWithIcon extends PureComponent {
   }
 }
 
+class MeasuredTabWithIconOnly extends PureComponent {
+  render() {
+    return (
+      <Tab
+        icon={
+          <CloudDownload />
+
+        }
+      />
+    )
+  }
+}
+
 const TabWithMeasurements = withMeasurements(MeasuredTab)(TabMeasurements);
 const TabBarWithMeasurements = withMeasurements(MeasuredTabBar)(TabBarMeasurements);
+// const TabBarWithIconOnlyMeasurements = withMeasurements(MeasuredTabWithIconOnly)(TabBarMeasurements);
+
 const TabWithIconWithMeasurements = withMeasurements(MeasuredTabWithIcon)(TabWithIconMeasurements,
   null,
   <TabsWithIconsAndTextSpec />

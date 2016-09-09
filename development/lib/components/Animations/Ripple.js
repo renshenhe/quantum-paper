@@ -5,21 +5,20 @@ import { TransitionMotion, spring } from 'react-motion';
 const leavingSpringConfig = { stiffness: 55, damping: 20 };
 
 export default class Ripple extends PureComponent {
-  constructor() {
-    super();
-
-    this.state = {
-      mouse: [],
-      now: 't' + 0,
-      width: 0,
-      height: 0,
-      animating: false,
-    }
-  }
+  static defaultProps = {
+    color: 'rgba(0, 0, 0, 0.3)',
+  };
+  state = {
+    wave: [],
+    currentWaveKey: 't',
+    pressed: false,
+    currentKey: ''
+  };
   componentDidMount() {
     const el = this.refs.ripple.getBoundingClientRect();
     this.setRippleSize(el.width, el.height)
   };
+
   setRippleSize = (width, height) => {
     let size;
     if (this.props.center) {
@@ -29,7 +28,7 @@ export default class Ripple extends PureComponent {
     }
     this.setState({ size: size })
   };
-  handleMouseDown = ({clientX, clientY, currentTarget}) => {
+  addWave = ({clientX, clientY, currentTarget}) => {
     let offset = currentTarget.getBoundingClientRect();
     let x = clientX - offset.left;
     let y = clientY - offset.top;
@@ -37,72 +36,74 @@ export default class Ripple extends PureComponent {
       x = this.props.center.width / 2;
       y = this.props.center.height / 2;
     }
-    this.setState({ mouse: [x, y], now: 't' + Date.now(), animating: true })
+    this.setState({ wave: [x, y], currentWaveKey:  Date.now().toString(), pressed: true })
   };
 
-  handleMouseUp = () => {
+  removeWave = () => {
     this.setState({
-      mouse: [],
-      now: '',
-      animating: false
+      wave: [],
+      currentWaveKey: '',
+      pressed: false
     })
   };
+  willEnter = () => {
+    return {
+      scale: 0,
+      opacity: 1,
+    };
+  };
   willLeave = (styleCell: Object) => {
-    // let size = this.rippleSize();
     return {
       ...styleCell.style,
       opacity: spring(0, leavingSpringConfig),
-      // opacity: .87,
       scale: spring(1, leavingSpringConfig),
-      // width: this.rippleSize(),
-      // height: this.rippleSize(),
-      // width: this.state.size,
-      // height: this.state.size,
     }
   };
 
-  // shouldComponentUpdate = (nextProps, nextState) => {
-  //   return this.state.mouse !== nextState.mouse || this.state.mouse !== [];
-  // };
-
   render() {
-    const { mouse: [mouseX, mouseY], now, container, size } = this.state;
+    const { wave: [waveX, waveY], currentWaveKey, container, size } = this.state;
     const { color } = this.props;
-    const styles = !this.state.animating ? [] : [{
-      key: now,
+    const styles = !this.state.pressed ? [] : [{
+      key: currentWaveKey,
       style: {
-        x: mouseX,
-        y: mouseY,
-        // opacity: spring(.3),
-        opacity: 1,
-        scale: spring(0, leavingSpringConfig),
+        x: waveX,
+        y: waveY,
+        opacity: spring(1, leavingSpringConfig),
+        scale: spring(1, leavingSpringConfig),
         height: size,
         width: size,
       }
     }];
     // const wrapper = this.containerShape();
     return (
-      <div ref='ripple' style={{ width: '100%', height: '100%'}}
-            onMouseDown={this.handleMouseDown}
-            onMouseUp={this.handleMouseUp}
-
+      <div 
+        ref='ripple' 
+        style={{ width: '100%', height: '100%' }}
+        onMouseDown={this.addWave}
+        onMouseUp={this.removeWave}
       >
-        <TransitionMotion willLeave={this.willLeave} styles={styles}>
-        { (ripples, i) =>
+        <TransitionMotion 
+          willLeave={this.willLeave} 
+          willEnter={this.willEnter} 
+          styles={styles}
+        >
+        { waves =>
           <div
           >
-            {ripples.map(({ key, style: { opacity, scale, x, y, height, width }}) =>
+            {waves.map(({ key, style: { opacity, scale, x, y, height, width }}) =>
               <div
                 key={key}
-                style={Object.assign({}, staticStyles.ripple, color && { backgroundColor: color }, {
-                                    opacity: opacity,
-                                    scale: scale,
-                                    width: width,
-                                    height: height,
-                                    transform: `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0) scale(${scale}`,
-                                    WebkitTransform: `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0) scale(${scale}`
+                style={{
+                  ...rippleStyles, 
+                  backgroundColor: color,
+                  opacity: opacity,
+                  scale: scale,
+                  width: width,
+                  height: height,
+                  transform: `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0) scale(${scale}`,
+                  WebkitTransform: `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0) scale(${scale}`
 
-                })} />
+                }} />
             )}
             </div>
         }
@@ -112,21 +113,12 @@ export default class Ripple extends PureComponent {
   }
 };
 
-const staticStyles = {
-  // container: {
-  //   position: 'absolute',
-  //   width: '100%',
-  //   height: '100%',
-  //   top: '0px',
-  //   left: '0px',
-  // },
-  ripple: {
-    borderRadius: '50%',
-    backgroundColor: 'rgba(0, 0, 0, .26)',
-    overflow: 'hidden',
-    position: 'absolute',
-    pointerEvents: 'none',
-    top: '0px',
-    left: '0px',
-  }  
-}
+const rippleStyles = {
+  borderRadius: '50%',
+  backgroundColor: 'rgba(0, 0, 0, .26)',
+  overflow: 'hidden',
+  position: 'absolute',
+  pointerEvents: 'none',
+  top: '0',
+  left: '0',
+};

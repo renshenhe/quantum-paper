@@ -1,7 +1,10 @@
 /* @flow */
 
 import React, { PureComponent } from 'react';
-import Ripple from '../Animations/Ripple';
+import Ripple from '../Ripple/Ripple';
+// import Ripple from '../Animations/RippleProto';
+
+// import Ripple from '../Ripple/Ripple';
 
 type Handler = (e?: any) => void;
 
@@ -103,7 +106,7 @@ export default class Button extends PureComponent {
     textColor: 'rgba(0, 0, 0, 0.87)',
     primaryColor: 'transparent',
     disabledColor: 'rgba(0, 0, 0, 0.12)',
-    rippleColor: 'rgba(0, 0, 0, 0.12)',
+    rippleColor: 'rgba(0, 0, 0, 0.3)',
     label: 'button',
   };
   // props: Props;
@@ -122,11 +125,18 @@ export default class Button extends PureComponent {
 
     this.setState({ pressed: false })
   };
-  handleMouseOver: Handler = (e: any) => {
-    this.setState({ focused: true })
+  // May not need mouse overs
+  // handleMouseOver: Handler = (e: any) => {
+  //   this.setState({ focused: true })
+  // };
+  // handleMouseOut: Handler = (e: any) => {
+  //   this.setState({ focused: false })
+  // };
+  handleMouseEnter: Handler = (e: any) => {
+    this.setState({ hovered: true })
   };
-  handleMouseOut: Handler = (e: any) => {
-    this.setState({ focused: false })
+  handleMouseLeave: Handler = (e: any) => {
+    this.setState({ hovered: false })
   };
   handleClick: Handler = (e: any) => {
     // e.preventDefault();
@@ -144,8 +154,8 @@ export default class Button extends PureComponent {
           onMouseDown={this.handleMouseDown}
           onMouseUp={this.handleMouseUp}
           onClick={this.handleClick}
-          onMouseOver={this.handleMouseOver}
-          onMouseOut={this.handleMouseOut}
+          onMouseEnter={this.handleMouseEnter}
+          onMouseLeave={this.handlMouseLeave}
           >
           <span style={style.text}>
           {label}
@@ -153,7 +163,7 @@ export default class Button extends PureComponent {
           {
             !disabled &&
             <div style={style.rippleContainer}>
-              <Ripple color={rippleColor} />
+              <Ripple rippleColor={rippleColor} />
             </div>
             
           }

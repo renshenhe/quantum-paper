@@ -12,7 +12,7 @@ type Props = {
   textColor?: string;
   floatingLabelColor?: string;
   hint?: string;
-  primaryColor?: string;
+  labelColor?: string;
   dark?: bool;
   backgroundColor?: string;
   fullWidth?: bool;
@@ -39,7 +39,8 @@ function getStyles(props: Props, state: State, context): Object {
     textColor,
     floatingLabelColor,
     backgroundColor,
-    primaryColor,
+    labelColor,
+    fontColor,
     dark,
     fullWidth,
     multiLine,
@@ -97,6 +98,8 @@ function getStyles(props: Props, state: State, context): Object {
       paddingTop:  !floatingLabel ? `${paddingTop}px` : `${paddingTop + (paddingBottom / 2) + (floatingLabel ? 16 : 0)}px`,
       paddingBottom: paddingBottom + 'px',
       boxSizing: 'border-box',
+      verticalAlign: 'top',
+
     },
     label: {
       fontSize: (floatingLabel && (dirty || focused)) ? '12px' : (dense ? '13px' : '16px'),
@@ -107,7 +110,8 @@ function getStyles(props: Props, state: State, context): Object {
       transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
       transitionDuration: '0.2s',
       transitionProperty: 'color, font-size, top',
-      color: ((dirty || focused) && floatingLabel) ? (primaryColor || 'rgba(63, 81, 181, 1)') 
+      color: ((dirty || focused) && floatingLabel) 
+        ? labelColor
         : (dark ? `rgba(255, 255 ,255, ${focused ? .7 : .54})` : `rgba(0, 0, 0, .54)`),
       top: floatingLabel ? (focused || dirty) ? paddingTop + 'px' : `${paddingTop + (paddingBottom / 2) + 16}px`
         : `${paddingBottom}px`,
@@ -122,13 +126,13 @@ function getStyles(props: Props, state: State, context): Object {
       outline: 'none',
       border: 'none',
       padding: '0px',
-      backgroundColor: backgroundColor || 'transparent',
+      backgroundColor: backgroundColor,
       fontSize: dense ? '13px' : '16px',
       fontFamily: 'Roboto',
-      color: dark ? '#FFF' : '#000',
-      boxSizing: 'border-box',
-      lineHeight: '16px',
-      verticalAlign: 'top',
+      color: fontColor,
+      // boxSizing: 'border-box',
+      lineHeight: '20px',
+      overflow: 'visible',
     },
     divider: {
       height: '1px',
@@ -160,7 +164,13 @@ function getStyles(props: Props, state: State, context): Object {
 }
 
 export default class TextField extends PureComponent<void, Props, State> {
-  props: Props;
+  static defaultProps = {
+    fontColor: 'rgba(0, 0, 0, 0.87)',
+    backgroundColor: 'transparent',
+    labelColor: 'rgb(63, 81, 181)',
+    type: 'text',
+  };
+  // props: Props;
   state: State = {
     dirty: false,
     pressed: false,
@@ -184,7 +194,7 @@ export default class TextField extends PureComponent<void, Props, State> {
     }
   };
   render() {
-    const { error, hint, errorMessage, label, multiLine, fullWidth } = this.props; // dense is for testing
+    const { error, hint, errorMessage, label, multiLine, fullWidth, rows, type } = this.props; // dense is for testing
     const style = getStyles(this.props, this.state)
     return (
       <div style={style.container}>
@@ -198,10 +208,11 @@ export default class TextField extends PureComponent<void, Props, State> {
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
             onChange={this.handleChange}
-            rows='5'
+            rows={5}
           />
           :          
           <input
+            type={type}
             style={style.input}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
