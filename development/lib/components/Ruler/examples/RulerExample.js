@@ -1,17 +1,21 @@
-import React, { PureComponent } from 'react';
-import Ruler from '../../Ruler/Ruler';
+/* @flow */
 
-export default class ButtonMeasurements extends PureComponent {
-  constructor(props, state) {
-    super(props, state);
+import React, { PureComponent } from 'react';
+import Button from '../../Button/Button';
+import Ruler from '../Ruler';
+import { withMeasurements } from '../withMeasurements';
+import SpecMeasurements from '../../SpecSheet/SpecMeasurements';
+
+class Measurements extends PureComponent {
+  componentDidMount() {
+    console.log(this.props)
   }
   render() {
-    const { paddingLeft, paddingTop, paddingRight, rect } = this.props;
     return (
-      <div>
+      <div className='measured-button'>
         <Ruler
-          height={rect.height >= 48 ? 36 : 32}
-          top={paddingTop}
+          height={this.props.componentRect.height}
+          top={0}
           left={0}
           labelPosition='left'
           bars='segment'
@@ -21,8 +25,8 @@ export default class ButtonMeasurements extends PureComponent {
 
         />
         <Ruler
-          height={rect.height >= 48 ? 36 : 32}
-          top={paddingTop}
+          height={36}
+          top={0}
           right={0}
           labelPosition='right'
 
@@ -51,7 +55,18 @@ export default class ButtonMeasurements extends PureComponent {
           maskPaddingTop={6}
           maskPaddingBottom={6}
         />
-      </div>
+      </div>    
     );
   }
 };
+
+
+const MeasuredComponent = withMeasurements(Button)(Measurements, { padding: '48px' });
+// class Example extends PureComponent {
+//   render() {
+//     return (
+//         <MeasuredComponent />
+//     );
+//   }
+// };
+export default MeasuredComponent;

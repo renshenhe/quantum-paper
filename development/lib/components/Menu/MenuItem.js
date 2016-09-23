@@ -1,6 +1,7 @@
 /* @flow */
 
 import React, { Component } from 'react';
+import Ripple from '../Ripple/Ripple';
 
 type Props = {
   label?: string;
@@ -21,7 +22,7 @@ function getStyles(props: Props, state: State) {
     hovered,
     pressed,
   } = state;
-
+  const { leftSpacing } = props;
   const styles = {
     container: {
       minWidth: '112px',
@@ -33,15 +34,27 @@ function getStyles(props: Props, state: State) {
       boxSizing: 'border-box',
       cursor: 'pointer',
       fontFamily: 'Roboto',
-      lineHeight: '16px',      
+      lineHeight: '16px',
+      position: 'relative',
+      paddingLeft: leftSpacing,      
     },
-    
+    rippleContainer: {
+      position: 'absolute',
+      top: '0px',
+      left: '0px',
+      width: '100%',
+      height: '100%',
+      overflow: 'hidden',
+    },
   }
 
   return styles;
 }
 type Handler = () => void;
 export default class MenuItem extends Component {
+  static defaultProps = {
+    leftSpacing: '16px',
+  }
   state: State = {
     active: false,
     hovered: false,
@@ -82,6 +95,9 @@ export default class MenuItem extends Component {
         onClick={this.handleClick}
       >
         { label }
+        <div style={style.rippleContainer}>
+          <Ripple />
+        </div>
       </div>
     );
   }

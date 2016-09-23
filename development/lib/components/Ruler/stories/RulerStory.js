@@ -6,6 +6,7 @@ import Button from '../../Button/Button';
 import ButtonMeasured from '../../Button/measurements/DefaultButton';
 import CloudDownload from '../../Icon/testSvg/CloudDownload';
 import ContainerRuler from '../ContainerRuler';
+import RulerExample from '../examples/RulerExample';
 
 storiesOf('Ruler')
   .add('Button Measured', () =>(
@@ -29,7 +30,9 @@ storiesOf('Ruler')
     </ContainerRuler>
     </div>
   ))
-
+  .add('Ruler Example', () =>(
+    <RulerExample />
+  ))
   // const staticStyles = {
   //   demo: {
   //     display: 'flex',

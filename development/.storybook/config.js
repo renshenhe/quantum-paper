@@ -11,6 +11,8 @@ function loadStories() {
   require('../lib/components/ProgressBar/stories/ProgressBarStory');
   require('../lib/components/SpecTable/stories/SpecTableStory');
   require('../lib/components/TextField/stories/TextFieldStory');
+  require('../lib/components/Menu/stories/MenuStory');
+  require('../lib/components/Drawer/stories/DrawerStory');
 
 
 }

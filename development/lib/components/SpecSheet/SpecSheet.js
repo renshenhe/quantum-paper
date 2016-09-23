@@ -13,7 +13,7 @@ function renderPosition(props) {
     top,
     width,
     position: 'absolute',
-    pointerEvents: 'none',
+    // pointerEvents: 'none',
   }
   return style
 }

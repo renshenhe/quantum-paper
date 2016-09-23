@@ -91,6 +91,7 @@ function getStyles(props: Props, state: State, context): Object {
     container: {
       display: (fullWidth || multiLine) ? 'block' : 'inline-block',
       boxSizing: 'border-box',
+      width: '360px',
     },
     textField: {
       position: 'relative',
@@ -176,6 +177,11 @@ export default class TextField extends PureComponent<void, Props, State> {
     pressed: false,
     focused: false
   };
+  componentWillMount() {
+    if (this.props.value) {
+      this.setState({ dirty: true })
+    };
+  }
   handleFocus: Handler = () => {
     this.setState({ focused: true })
   };
@@ -194,7 +200,7 @@ export default class TextField extends PureComponent<void, Props, State> {
     }
   };
   render() {
-    const { error, hint, errorMessage, label, multiLine, fullWidth, rows, type } = this.props; // dense is for testing
+    const { error, hint, errorMessage, label, multiLine, fullWidth, rows, type, value } = this.props; // dense is for testing
     const style = getStyles(this.props, this.state)
     return (
       <div style={style.container}>
@@ -209,6 +215,7 @@ export default class TextField extends PureComponent<void, Props, State> {
             onBlur={this.handleBlur}
             onChange={this.handleChange}
             rows={5}
+            value={value}
           />
           :          
           <input
@@ -217,6 +224,7 @@ export default class TextField extends PureComponent<void, Props, State> {
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
             onChange={this.handleChange}
+            value={value}
           />
           
         }

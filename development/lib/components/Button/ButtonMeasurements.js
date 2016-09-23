@@ -21,6 +21,8 @@ export default class ButtonMeasurements extends PureComponent {
           position='bottom'
           horizontal='bottom'
           bottom={0}
+          maskHeight='36px'
+          
           left={paddingLeft}
         />
         <Ruler
@@ -28,6 +30,7 @@ export default class ButtonMeasurements extends PureComponent {
           position='bottom'
           horizontal='bottom'
           bottom={0}
+          maskHeight='36px'
           right={paddingRight}
         />
       </div>
